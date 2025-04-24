@@ -1,0 +1,60 @@
+\documentclass[12pt]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+
+% --- Page Setup ---
+\geometry{a4paper, margin=1in}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{Dorde Zivanovic}
+
+% --- Title ---
+\title{Next Silicon: CM Home Assignment}
+\author{Dorde Zivanovic \\ \small{LinScale}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduction}
+Write your introduction here. You can include inline math like $E = mc^2$ or display equations:
+\begin{equation}
+    \int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}
+\end{equation}
+
+\section{Main Content}
+\subsection{Subsection Title}
+You can insert figures:
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{example-image}
+    \caption{An example image.}
+    \label{fig:example}
+\end{figure}
+
+\subsection{Lists}
+\begin{itemize}
+    \item First item
+    \item Second item
+\end{itemize}
+
+\section{Conclusion}
+Summarize your findings or thoughts here.
+\cite{lamport1994}
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}
