@@ -41,12 +41,58 @@ The code is written for C and follows the following bad practices:
 Here, I will give state several main drawbacks in terms of the implementation and numerical accuracy. The division by
 In the next subsection, I will list the drawbacks related to the method itself.
 \subsection{Mathematical Analysis}
+Let us state the general Taylor series formula that is implemented in Algorithm \ref{alg:sine_existing}.
+\begin{TheoremColor}{Theorem 5.19 from \protect{\cite[p.~113]{apostol1985mathematical}}}{taylor_formula}
+    Let $f$ be a function having finite $n$-th derivative $f^{(n)}$
+    everywhere in an open interval $(a, b)$ and assume that  $f^{(n-1)}$ is continuous on the closed interval $[a, b]$. Then, for every $x$ in $[a, b], x\neq c$, there exists a point $x_1$ interior to the interval joining $x$ and $c$ such that
+
+    \begin{equation*}
+        f(x) = f(c) + \sum_{k=1}^{n-1} \frac{f^{(k)}(c)(x-c)^{(k)}}{k!} + \frac{f^{(n)}(x_1)}{n!} (x - c)^n.
+    \end{equation*}
+\end{TheoremColor}
+A corollary of Theorem \ref{th:taylor_formula} when we set $c = 0$ is a Maclaurin Series.
+\begin{CorollaryColor}{Maclaurin Series}{Maclaurin}
+    Let $f$ be a function having finite $n$-th derivative $f^{(n)}$
+    everywhere in an open interval $(a, b)$ and assume that  $f^{(n-1)}$ is continuous on the closed interval $[a, b]$. Assume that $c \in [a, b]$. Then, for every $x$ in $[a, b], x\neq 0$, there exists a point $x_1$ interior to the interval joining $x$ and $0$ such that
+
+    \begin{equation*}
+        f(x) = f(0) + \sum_{k=1}^{n-1} \frac{f^{(k)}(0)(x)^{(k)}}{k!} + \frac{f^{(n)}(x_1)}{n!} x^n.
+    \end{equation*}
+\end{CorollaryColor}
+Let us now set $a = -\pi, b= \pi$ and $f(x) = sin(x)$ .
+The Maclaurin Series becomes for $\sin$ function:
+\begin{CorollaryColor}{}{sine_mac}
+    For $x \in \mathbb{R}, x\neq 0$ and $n \in \mathbb{N}$, and $0 < |x_1| < |x|$
+    the approximation of a degree $n$ is
+    \begin{equation*}
+        sin(x) = \sum_{i=0}^{\lfloor\frac{n}{2}\rfloor}
+        \left(-1\right)^{ i} \frac{x^{2i + 1}}{(2i+1)!}   +  L(x, n).
+    \end{equation*}
+    where
+    \begin{equation*}
+        L(x, n) = \begin{cases}
+            \frac{f^{(n + 2)}x_1}{(n+2)!}x^{n+2}, & \text{if } n \bmod 2 = 0,  \\
+            \frac{f^{(n + 1)}x_1}{(n+1)!}x^{n+1}, & \text{if } n \bmod 2 = 1.
+          \end{cases}
+    \end{equation*}
+\end{CorollaryColor}
+Thus, the method stated in Algorithm \ref{alg:sine_existing} has an algorithmic error $L(x, 7)$ which is smaller than $\frac{x^8}{8!}$.
+Now, we obtain
 \subsection{Failures}
+Based on Corollary \ref{cor:sine_mac}, we can notice that Algorithm \ref{alg:sine_existing} is incorrect for $x = 0$.
+Similar, the farther the $x$ is from 0, the error is larger since $x^8$ grows exponentially.
+There are several ways to solve these problems:
+\begin{enumerate}
+    \item Have another Taylor series expansion for numbers around $\pi$ and $-\pi$. In this case we would manually calculate the $\sin x$ for $\pi$ and $-\pi$.
+    \item  Add more terms in Taylor series expansion. It is important to find the optimal degree for the balance of accuracy and performance.
+    \item Implement another method.
+\end{enumerate}
 \subsection{Test Plan}
 
 \section{Conclusion}
 Summarize your findings or thoughts here.
 \cite{apostol1985mathematical}
+
 \bibliographystyle{plain}
 \bibliography{refs}
 

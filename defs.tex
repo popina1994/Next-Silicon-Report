@@ -11,6 +11,13 @@
 \usepackage{xcolor}
 \usepackage{algorithm2e}
 \usepackage{algorithmicx}
+\usepackage{tcolorbox}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{setspace}
+
 \lstset{
   language=C++,
   basicstyle=\ttfamily\small,
@@ -33,3 +40,77 @@
   escapeinside={*@}{@*}
   }
 % escapechar=|,
+
+
+\tcbuselibrary{theorems, skins, breakable}
+
+\newtcbtheorem[auto counter, number within=section]{TheoremColor}{Theorem}%
+{colback=red!10!white,colframe=red!100!black,fonttitle=\bfseries, separator sign none,
+left=2pt,right=2pt,top=2pt,bottom=2pt,
+width=1.02\linewidth,
+theorem style=plain,
+code={\onehalfspacing},
+%separator sign={\ $\blacktriangleright$},
+description delimiters parenthesis, description color=red!25!purple,
+coltitle=blue!75!black}{th}
+
+\newtcbtheorem[use counter from=TheoremColor]{TheoremColorTitle}{Theorem}%
+{colback=red!10!white,colframe=red!100!black,fonttitle=\bfseries, separator sign none,
+left=2pt,right=2pt,top=2pt,bottom=2pt,
+width=1.02\linewidth,
+code={\onehalfspacing},
+description delimiters parenthesis, description color=black!100!white,
+coltitle=blue!75!black}{th}
+
+
+\newtcbtheorem[use counter from=TheoremColor]{LemmaColor}{Lemma}%
+{colback=green!10!white,colframe=green!100!black,fonttitle=\bfseries, separator sign none,
+left=2pt,right=2pt,top=2pt,bottom=2pt,
+theorem style=plain,
+width=1.02\linewidth,
+code={\onehalfspacing},
+description delimiters parenthesis, description color=red!25!purple,
+coltitle=blue!75!black}{le}
+
+\newtcbtheorem[use counter from=TheoremColor]{CorollaryColor}{Corollary}%
+{colback=orange!10!white,colframe=orange!50!black,fonttitle=\bfseries, separator sign none,
+left=2pt,right=2pt,top=2pt,bottom=2pt,
+theorem style=plain,
+width=1.02\linewidth,
+code={\onehalfspacing},
+description delimiters parenthesis, description color=red!25!purple,
+coltitle=blue!75!black}{cor}
+
+
+\newtcbtheorem[use counter from=TheoremColor]{DefinitionColor}{Definition}%
+{colback=yellow!10!white,colframe=yellow!75!black,fonttitle=\bfseries,
+left=2pt,right=2pt,top=2pt,bottom=2pt,
+width=1.02\linewidth,
+theorem style=plain,
+code={\onehalfspacing},
+description delimiters parenthesis, description color=red!25!purple,coltitle=blue!75!black}{def}
+
+\newtcbtheorem[use counter from=TheoremColor]{DefinitionColorBreak}{Definition}%
+{colback=yellow!10!white,colframe=yellow!75!black,fonttitle=\bfseries,
+left=2pt,right=2pt,top=2pt,bottom=2pt,
+width=1.02\linewidth,
+theorem style=plain,
+breakable,
+code={\onehalfspacing},
+description delimiters parenthesis, description color=red!25!purple,coltitle=blue!75!black}{def}
+
+\tcolorboxenvironment{proof}{% `proof' from `amsthm'
+blanker, breakable, left=3mm,
+width=1.02\linewidth,
+code={\onehalfspacing},
+before skip=10pt, after skip=10pt,
+before upper={\parindent15pt\noindent},
+borderline west={1mm}{0pt}{blue}}
+
+
+
+\BeforeBeginEnvironment{DefinitionColor}{\savenotes}
+\AfterEndEnvironment{DefinitionColor}{\spewnotes}
+
+\BeforeBeginEnvironment{DefinitionColorBreak}{\savenotes}
+\AfterEndEnvironment{DefinitionColorBreak}{\spewnotes}
