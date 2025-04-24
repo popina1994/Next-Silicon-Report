@@ -1,0 +1,34 @@
+
+\begin{algorithm}
+    \caption{Algorithm with Code Listing}
+    \begin{algorithmic}[1]
+    \State \textbf{Input:} A float (IEEE-754) number
+    \State \textbf{Output:} A float (IEEE-754) sine value of this number computed using Taylor Series.
+    \State \textbf{Steps:}
+\begin{lstlisting}[numbers=left]
+float fp32_custom_sine(float x)
+{
+    x = fmodf(x, 2.0f * (float)M_PI);  *@\label{alg:sine_ex:ln:fmodf}@*
+    if (x > (float)M_PI) *@\label{alg:sine_ex:ln:xGreater}@*
+        x -= 2.0f * (float)M_PI; *@\label{alg:sine_ex:ln:xMinus}@*
+    else if (x < -(float)M_PI) *@\label{alg:sine_ex:ln:xLess}@*
+        x += 2.0f * (float)M_PI; *@\label{alg:sine_ex:ln:xPi}@*
+    float result = 0.0f;
+    float term = x;
+    float x_squared = x * x;
+    int sign = 1;
+    for (int n = 1; n <= 7; n += 2)
+    {
+        result += sign * term;
+        sign = -sign;
+        term = term * x_squared;
+        term = term / (float)(n + 1);
+        term = term / (float)(n + 2);
+    }
+    return result;
+}
+
+\end{lstlisting}
+\end{algorithmic}
+ \label{alg:sine_existing}
+\end{algorithm}

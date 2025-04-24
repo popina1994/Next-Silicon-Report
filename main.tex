@@ -22,53 +22,27 @@
 This report contains the responses to the tasks stated in the home project pdf.
 It is accompanied with the repository that contains reproducible solutions with the installation instructions alongside: experiments and tests according to the task requirements.
 \section{Code Analysis and Documentation}
-In this section we analyze the existing code
-\begin{algorithm}
-    \caption{Algorithm with Code Listing}
-    \begin{algorithmic}[1]
-    \State \textbf{Input:} An array of integers
-    \State \textbf{Output:} Sorted array
-    \State \textbf{Steps:}
-    \State
-\begin{lstlisting}
-float fp32_custom_sine(float x)
-{
-    x = fmodf(x, 2.0f * (float)M_PI);
-    if (x > (float)M_PI)
-        x -= 2.0f * (float)M_PI;
-    else if (x < -(float)M_PI)
-        x += 2.0f * (float)M_PI;
-    float result = 0.0f;
-    float term = x;
-    float x_squared = x * x;
-    int sign = 1;
-    for (int n = 1; n <= 7; n += 2)
-    {
-        result += sign * term;
-        sign = -sign;
-        term = term * x_squared;
-        term = term / (float)(n + 1);
-        term = term / (float)(n + 2);
-    }
-    return result;
-}
-\end{lstlisting}
-\end{algorithmic}
-\end{algorithm}
-\subsection{Subsection Title}
-You can insert figures:
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.5\textwidth]{example-image}
-    \caption{An example image.}
-    \label{fig:example}
-\end{figure}
+In this section we analyze the existing code shown in Algorithm \ref{alg:sine_existing}.
 
-\subsection{Lists}
-\begin{itemize}
-    \item First item
-    \item Second item
-\end{itemize}
+\subsection{The Existing Implementation: Code Drawbacks}
+The code is written for C and follows the following bad practices:
+\begin{enumerate}
+    \item Reusing the variable multiple times,  \texttt{(float)M\_PI} and \texttt{2.0f * (float)M\_PI}, (lines \ref{alg:sine_ex:ln:fmodf}, \ref{alg:sine_ex:ln:xGreater}, \ref{alg:sine_ex:ln:xLess}, \ref{alg:sine_ex:ln:xLess}, \ref{alg:sine_ex:ln:xMinus}, \ref{alg:sine_ex:ln:xPi} of Algorithm \ref{alg:sine_existing});
+    \item Not using auto in order to automatically deduce types since the results of all the statements are known;
+    \item Cleaning if loop to be more understandable: \texttt{fmodf} returns the result in the range $(-2 \pi, 2 \pi)$. Then, now it is obvious that one checks whether the number is outside of the range $[-\pi, \pi]$, and then updates \textbf{x} for $2 \pi$ period, so the method works from the number in the range $[-\pi, \pi]$;
+    \item Adding more verbosity ();
+    \item Reusing variable names -> more verbose names should be used in order to improve readability of the code. The c ompiler will optimize for the least number of variables/registers to be used;
+    \item Renaming function names and migrating these functions to the corresponding headers and sources that would contain the custom maths functions.
+\end{enumerate}
+
+\input{algorithms/sine_existing.tex}
+
+\subsection{Drawbacks: numerical and implementation issues}
+Here, I will give state several main drawbacks in terms of the implementation and numerical accuracy. The division by
+In the next subsection, I will list the drawbacks related to the method itself.
+\subsection{Mathematical Analysis}
+\subsection{Failures}
+\subsection{Test Plan}
 
 \section{Conclusion}
 Summarize your findings or thoughts here.
