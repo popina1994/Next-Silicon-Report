@@ -1,24 +1,13 @@
 \documentclass[12pt]{article}
 
-% --- Packages ---
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{amsmath, amssymb}
-\usepackage{graphicx}
-\usepackage{hyperref}
-\usepackage{geometry}
-\usepackage{fancyhdr}
-\usepackage{enumitem}
+\input{defs.tex}
 
-% --- Page Setup ---
 \geometry{a4paper, margin=1in}
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{\thepage}
 \lhead{Dorde Zivanovic}
 
-% --- Title ---
 \title{Next Silicon: CM Home Assignment}
 \author{Dorde Zivanovic \\ \small{LinScale}}
 \date{\today}
@@ -30,12 +19,42 @@
 \newpage
 
 \section{Introduction}
-Write your introduction here. You can include inline math like $E = mc^2$ or display equations:
-\begin{equation}
-    \int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}
-\end{equation}
-
-\section{Main Content}
+This report contains the responses to the tasks stated in the home project pdf.
+It is accompanied with the repository that contains reproducible solutions with the installation instructions alongside: experiments and tests according to the task requirements.
+\section{Code Analysis and Documentation}
+In this section we analyze the existing code
+\begin{algorithm}
+    \caption{Algorithm with Code Listing}
+    \begin{algorithmic}[1]
+    \State \textbf{Input:} An array of integers
+    \State \textbf{Output:} Sorted array
+    \State \textbf{Steps:}
+    \State
+\begin{lstlisting}
+float fp32_custom_sine(float x)
+{
+    x = fmodf(x, 2.0f * (float)M_PI);
+    if (x > (float)M_PI)
+        x -= 2.0f * (float)M_PI;
+    else if (x < -(float)M_PI)
+        x += 2.0f * (float)M_PI;
+    float result = 0.0f;
+    float term = x;
+    float x_squared = x * x;
+    int sign = 1;
+    for (int n = 1; n <= 7; n += 2)
+    {
+        result += sign * term;
+        sign = -sign;
+        term = term * x_squared;
+        term = term / (float)(n + 1);
+        term = term / (float)(n + 2);
+    }
+    return result;
+}
+\end{lstlisting}
+\end{algorithmic}
+\end{algorithm}
 \subsection{Subsection Title}
 You can insert figures:
 \begin{figure}[h!]
@@ -53,7 +72,7 @@ You can insert figures:
 
 \section{Conclusion}
 Summarize your findings or thoughts here.
-\cite{lamport1994}
+\cite{apostol1985mathematical}
 \bibliographystyle{plain}
 \bibliography{refs}
 
