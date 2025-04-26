@@ -109,8 +109,54 @@ For the problems stated in Subsection \ref{subsec:acc_and_corr} there are severa
 \begin{enumerate}
     \item Have another Taylor series expansion for numbers around $\pi$ and $-\pi$. In this case we would manually calculate the $\sin x$ for $\pi$ and $-\pi$.
     \item  Add more terms in Taylor series expansion. It is important to find the optimal degree for the balance of accuracy and performance.
-    \item Implement one or more of the alternative methods: Minimax Polynomial Approximation, Chebyshev Polynomial Expansion, Lookup Table with Linear Interpolation and Lookup Table with Spline or Cubic Interpolation.
+    \item Implement one or more of the alternative methods: Minimax Polynomial Approximation, Chebyshev Polynomial Expansion \cite{press2007numerical}, Lookup Table with Linear Interpolation and Lookup Table with Spline or Cubic Interpolation.
 \end{enumerate}
+Here we will focus on the implementation of the Chebyshev Polynomial Expansion.
+
+\begin{DefinitionColor}{\cite[p~.233]{press2007numerical}}{cheb_poly}
+    For a number $n\in \mathbb{N}$ and a real number $x$, the Chebyshev polynomial of degree $n$ is denoted $T_n(x)$ and defined as
+    \begin{equation*}
+        T_n(x) = \cos(n \arccos x).
+    \end{equation*}
+\end{DefinitionColor}
+
+\begin{TheoremColor}{}{cheb_rec}
+    For $n \in \mathbb{N}$,and $x \in \mathbb{R}$ the Chebyshev polynomial of degree $n$ satisfies the formula:
+    \begin{equation*}
+        T_n=2xT_n(x) - T_{n-1}(x),
+    \end{equation*}
+    where $T_0(x) =1$ and $T_1(x) = x$.
+\end{TheoremColor}
+Let us introduce definitions that would help with our computations.
+
+\begin{DefinitionColor}{\cite[p~.234]{press2007numerical}}{cheb_coef}
+    For a number $j, N\in \mathbb{N}$, the Chebyshev coefficient of degree $n$ is denoted $c_n(x)$ and defined as
+    \begin{equation*}
+        c_j(N) = \frac{2}{N} \sum_{k=0}^{N-1} f\left( \cos\left(  \frac{\pi(k+\frac{1}{2})}{N}\right)  \right) \cos \left(\frac{\pi j(k+\frac{1}{2})}{N}\right).
+    \end{equation*}
+\end{DefinitionColor}
+
+Now the following formula holds:
+\begin{TheoremColor}{}{cheb_approx}
+    Let $N \in \mathbb{N}$, $x \in \mathbb{N}$, and a function $f : [-1, 1] \mapsto \mathbb{R}$.
+    Let $f$ be a continuous and bounded function. Now, the follows holds:
+    \begin{equation*}
+        f(x) \approx \sum_{k=0}^{N-1} \left(c_k(N) \cdot T_k(x)\right) - \frac{1}{2} c_0(N).
+    \end{equation*}
+\end{TheoremColor}
+
+We implement the approximation from Theorem \ref{th:cheb_approx} in Algorithm \ref{alg:sine_cheb_opt}.
+Chebyshev coefficients are computed in Algorithm \ref{alg:cheb_coef}.
+Since Chebyshev coefficients from Definition \ref{def:cheb_coef} are defined for the input $[-1, 1]$, but our input is in the range $[-\pi, \pi]$, we need to map the input to $[-1, 1]$ by uniformly scaling the input to this range (Algorithm \ref{alg:sine_cheb_opt} line \ref{alg:sine_cheb:ln:scaling}).
+However, we have to scale back the input to $[-\pi, \pi]$ for the function $\texttt{f}$ in Algorithm \ref{alg:cheb_coef} (lines \ref{alg:sine_cheb:ln:scaling_back_0}, \ref{alg:sine_cheb:ln:scaling_back_1}, \ref{alg:sine_cheb:ln:scaling_back_2}).
+The rest of Algorithm \ref{alg:cheb_coef} follows Definition \ref{def:cheb_coef}.
+Algorithm \ref{alg:sine_cheb_opt} has two more improvements.
+First, the algorithm uses the optimized \texttt{fmodf} for the accuracy implemented in the function \texttt{optimizedFModf2Pi} that maps the input from the set of real numbers to the set $[-2 \pi, 2 \pi]$.
+Further, instead of following Theorem \ref{th:cheb_approx}, the algorithm implements Clenshaw's formula \cite[p~.237]{press2007numerical} for the better stability.
+
+\input{algorithms/cheb_coef.tex}
+\input{algorithms/cheb_approx.tex}
+
 \bibliographystyle{plain}
 \bibliography{refs}
 

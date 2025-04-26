@@ -1,0 +1,31 @@
+
+\begin{algorithm}
+    \caption{Computing Chebyshev Coefficients}
+    \begin{algorithmic}[1]
+    \State \textbf{Input:} A function \texttt{f}, the number of coefficients to compute \texttt{numCoeffs} and bounds of the interval \texttt{a} and \texttt{b}.
+    \State \textbf{Output:} A return vector that contains the computed values.
+\begin{lstlisting}[numbers=left]
+    std::vector<float> computeChebyshevCoefficients(std::function<float(float)> f, uint32_t numCoeffs, float a, float b) {
+        std::vector<float> vCoeffs(numCoeffs, 0.f);
+
+        float bma = 0.5f * (b - a); *@\label{alg:sine_cheb:ln:scaling_back_0}@*
+        float bpa = 0.5f * (b + a); *@\label{alg:sine_cheb:ln:scaling_back_1}@*
+        for (uint32_t j = 0u; j < numCoeffs; j++) {
+            float sum = 0.f;
+
+            for (uint32_t k = 0u; k < numCoeffs; k++) {
+                float leftTheta = std::numbers::pi_v<float> * (k + 0.5f) / numCoeffs;
+                float rightTheta = leftTheta * j;
+                float leftCos = std::cos(leftTheta);
+                float rightCos = std::cos(rightTheta);
+                sum += f(leftCos * bma + bpa) * rightCos; *@\label{alg:sine_cheb:ln:scaling_back_2}@*
+            }
+            vCoeffs[j] = sum * 2.0f / numCoeffs;
+        }
+
+        return vCoeffs;
+    }
+\end{lstlisting}
+\end{algorithmic}
+ \label{alg:cheb_coef}
+\end{algorithm}
