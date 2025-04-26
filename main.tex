@@ -150,13 +150,22 @@ Let us introduce definitions that would help with our computations.
 \end{DefinitionColor}
 
 Now the following formula holds:
-\begin{TheoremColor}{}{cheb_approx}
+\begin{TheoremColor}{\protect{\cite[p~244. Theorem 8.7]{suli2003introduction}}
+}{cheb_approx}
     Let $N \in \mathbb{N}$, $x \in \mathbb{N}$, and a function $f : [-1, 1] \mapsto \mathbb{R}$.
     Let $f$ be a continuous and bounded function. Now, the follows holds:
     \begin{equation*}
-        f(x) \approx \sum_{k=0}^{N-1} \left(c_k(N) \cdot T_k(x)\right) - \frac{1}{2} c_0(N).
+        f(x) = \sum_{k=0}^{N-1} \left(c_k(N) \cdot T_k(x)\right) - \frac{1}{2} c_0(N) + R_n(x),
     \end{equation*}
+    where
+    \begin{equation*}
+        \left| R_N(x) \right| \leq \frac{M}{2^N} \text{ and }
+    \end{equation*}
+    $M$ is the maximum of the $n$-th derivative of the function $f$ on the input interval.
 \end{TheoremColor}
+We can notice that $R_n$ exponentially decreases based on the degree.
+In other words, we do not need large $N$ in order to compute the algorithmic error.
+The error also does not depend on $x$ which implies it will converge independent of the input value, unlike Taylor series.
 
 We implement the approximation from Theorem \ref{th:cheb_approx} in Algorithm \ref{alg:sine_cheb_opt}.
 Chebyshev coefficients are computed in Algorithm \ref{alg:cheb_coef}.
@@ -171,6 +180,7 @@ Further, instead of following Theorem \ref{th:cheb_approx}, the algorithm implem
 \newpage
 \subsection{Experiments: Accuracy and Performance}
 Here we compare the performance and accuracy of various methods.
+
 \textbf{Accuracy.}
 Based on Figure \ref{fig:abs_error}, \ref{fig:rel_error}, \ref{fig:abs_error_two_pi} and \ref{fig:rel_error_two_pi}, we can notice that Chebyshev tend to produce more accurate results, especially farther away from 0. We also notice the more terms we use, the more accurate both methods become. The difference in terms of accuracy between optimized and non-optimized Taylor series implementation is negligible.
 We also run experiments for large numbers: 1e14 -1e15, however \texttt{sin x} provided by \texttt{std} library produces incorrect results which we verify by comparing some of our values with \texttt{np.sin}.
