@@ -1,6 +1,6 @@
 
 \begin{algorithm}
-    \caption{Sine using Taylor series: Existing Method}
+    \caption{Sine using Chebyshev Approximation}
     \begin{algorithmic}[1]
     \State \textbf{Input:} A float (IEEE-754) number and the degree \texttt{chebDegreeN} used in Chebyshev approximation.
     \State \textbf{Output:} A float (IEEE-754) sine value of this number computed using Chebyshev approximation.
@@ -27,7 +27,7 @@
         auto chebCoeffs = computeChebyshevCoefficients(::sinf, chebDegreeN, a, b);
 
         float dMPlusTwo = 0.f;
-        float dMPlusOne = 0.f;+
+        float dMPlusOne = 0.f;
 
         // Clenshaw's formula
         for (std::size_t k = chebDegreeN - 1; k > 0; k--) {

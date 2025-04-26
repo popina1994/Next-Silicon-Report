@@ -1,0 +1,56 @@
+
+\begin{algorithm}
+    \caption{Sine using Taylor series: Optimized Method}
+    \begin{algorithmic}[1]
+    \State \textbf{Input:} A float (IEEE-754) number and the degree \texttt{degreeEnd} used in Taylor series.
+    \State \textbf{Output:} A float (IEEE-754) sine value of this number computed using Taylor series.
+\begin{lstlisting}[numbers=left]
+    float nextSiliconSineFP32Taylor(float x, uint32_t degreeEnd)
+    {
+        static constexpr auto PI_F = pi_v<float>;
+        static constexpr auto TWO_PI_F = 2 * PI_F;
+        static constexpr auto TAYLOR_DEGREE_START = 3u;
+        static constexpr auto TAYLOR_DEGREE_NEXT_INC = 2u;
+
+        if (std::abs(x) == 0.f) { return 0; }
+
+        auto xPiRange = fmodf(x, TWO_PI_F);
+        if (std::abs(xPiRange) > PI_F)
+        { xPiRange -=  boost::math::sign(xPiRange) * TWO_PI_F; }
+
+        auto result = xPiRange;
+        auto term = xPiRange;
+        const auto xPiRangeSquared = xPiRange * xPiRange;
+        auto sign = 1;
+        std::vector<float> vFact(degreeEnd + 1, 0);
+        vFact[1] = 1;
+
+        for (auto taylorDegree = TAYLOR_DEGREE_START;
+            taylorDegree <= degreeEnd;
+            taylorDegree += TAYLOR_DEGREE_NEXT_INC)
+        { vFact[taylorDegree] = vFact[taylorDegree - 2] * (taylorDegree - 1) * taylorDegree;}
+
+        for (auto taylorDegree = TAYLOR_DEGREE_START;
+            taylorDegree <= degreeEnd;
+            taylorDegree += TAYLOR_DEGREE_NEXT_INC)
+        {
+            sign = -sign;
+            term = term * xPiRangeSquared;
+            auto termAdd = term / float(vFact[taylorDegree]);
+            if (sign == 1)
+            {
+                result += termAdd;
+            }
+            else
+            {
+                result -= termAdd;
+            }
+        }
+
+        return result;
+    }
+
+\end{lstlisting}
+\end{algorithmic}
+ \label{alg:tay_optimized}
+\end{algorithm}
