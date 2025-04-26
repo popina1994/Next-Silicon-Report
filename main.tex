@@ -25,7 +25,7 @@ It is accompanied with the repository \footnote{\href{https://github.com/popina1
 In this section we analyze the existing code shown in Algorithm \ref{alg:sine_existing}.
 
 \subsection{Code Drawbacks}
-The code is written for C and follows the following bad practices:
+The code is written for C and follows the following bad practices and readability improvements:
 \begin{enumerate}
     \item Reusing the variable multiple times,  \texttt{(float)M\_PI} and \texttt{2.0f * (float)M\_PI}, (lines \ref{alg:sine_ex:ln:fmodf}, \ref{alg:sine_ex:ln:xGreater}, \ref{alg:sine_ex:ln:xLess}, \ref{alg:sine_ex:ln:xLess}, \ref{alg:sine_ex:ln:xMinus}, \ref{alg:sine_ex:ln:xPi} of Algorithm \ref{alg:sine_existing});
     \item Not using auto in order to automatically deduce types since the results of all the statements are known;
@@ -85,11 +85,11 @@ The Maclaurin Series becomes for $\sin$ function:
           \end{cases}
     \end{equation*}
 \end{CorollaryColor}
-Thus, the method stated in Algorithm \ref{alg:sine_existing} has an algorithmic error $L(x, 7)$ which is smaller than $\frac{x^8}{8!}$.
-Now, we obtain
+Thus, the method stated in Algorithm \ref{alg:sine_existing} has an algorithmic error $L(x, 7)$ which is smaller than $\frac{x^8}{8!}$. However, for large numbers this can be quite huge.
+
 \subsection{Accuracy and Correctness Failures} \label{subsec:acc_and_corr}
 Based on Corollary \ref{cor:sine_mac}, we can notice that Algorithm \ref{alg:sine_existing} is incorrect for $x = 0$.
-Similar, the farther the $x$ is from 0, the error is larger since $x^8$ grows exponentially.
+Similar, the farther $x$ is from 0, the error is larger since $x^8$ grows exponentially.
 There are several ways to solve these problems:
 
 \subsection{Experiments}
@@ -105,15 +105,15 @@ The test plan will cover the following experiments:
     \item Edge cases
         \begin{enumerate}
             \item the multiplicands of $\frac{\pi}{2}$;
-            \item large numbers (close to the absolute minimum  and maximum for the float numbers);
+            \item large numbers (larger than ULP);
             \item normal distributions around the multiplicands of $\frac{\pi}{2}$;
             \item \texttt{nan}s.
         \end{enumerate}
-    \item Numbers
 \end{enumerate}
 For each of these experiments we would compute the relative error in comparison to the value computed by the $\sin x$ provided in \texttt{cmath}.
 \newpage
 \section{Additional Algorithms}
+Here we list the additional algorithms we have chosen.
 \subsection{Preliminaries and Implementation}
 For the problems stated in Subsection \ref{subsec:acc_and_corr} there are several ways to approach:
 \begin{enumerate}
@@ -121,7 +121,8 @@ For the problems stated in Subsection \ref{subsec:acc_and_corr} there are severa
     \item  Add more terms in Taylor series expansion. It is important to find the optimal degree for the balance of accuracy and performance.
     \item Implement one or more of the alternative methods: Minimax Polynomial Approximation, Chebyshev Polynomial Expansion \cite{press2007numerical}, Lookup Table with Linear Interpolation and Lookup Table with Spline or Cubic Interpolation.
 \end{enumerate}
-All the downsides listed in the previous section with regards to the provided implementation have been fixed in Algorithm \ref{alg:tay_optimized}.
+In Algorithm \ref{alg:tay_optimized}, all the downsides listed in the previous section with regards to the provided implementation have been fixed.
+In particular, we added more terms and optimized the existing code.
 \input{algorithms/tay_optimized.tex}.
 Here we will focus on the implementation of the Chebyshev Polynomial Expansion.
 
@@ -172,6 +173,7 @@ Further, instead of following Theorem \ref{th:cheb_approx}, the algorithm implem
 Here we compare the performance and accuracy of various methods.
 \textbf{Accuracy.}
 Based on Figure \ref{fig:abs_error} and \ref{fig:rel_error}, we can notice that Chebyshev tend to produce more accurate results, especially farther away from 0. We also notice the more terms we use, the more accurate both methods become. The difference in terms of accuracy between optimized and non-optimized Taylor series implementation is negligible.
+We also run experiments for large numbers: 1e14 -1e15, however \texttt{sin x} provided by \texttt{std} library produces incorrect results which we verify by comparing some of our values with \texttt{np.sin}.
 
 \begin{figure}[h]
   \centering
@@ -183,14 +185,17 @@ Based on Figure \ref{fig:abs_error} and \ref{fig:rel_error}, we can notice that 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{plots/accuracy/inc_rel_pi_001.pdf}
-  \caption{Comparison of absolute error for various methods.}
+  \caption{Comparison of relative error for various methods. We compute relative error by comparing to \texttt{sin x} provided by \texttt{std} library.}
   \label{fig:rel_error}
 \end{figure}
 
 \textbf{Performance.}
-Based on Figure \ref{fig:perf_inc} and \ref{fig:cheb_vs_tay}, we can notice that Chebyshev tend to be slower around one order of magnitude.
-We expected this since the time complexity is higher for Chebyshev approximation.
-We also notice that the optimized version is a little bit faster.
+Based on Figure \ref{fig:perf_inc} and \ref{fig:cheb_vs_tay}, we can notice that Chebyshev approximation tends to be slower around one order of magnitude.
+Similar, as we add more terms, the performance decreases, especially for the Chebyshev approximation.
+We expected this since the time complexity is higher for the Chebyshev approximation.
+In Figure \ref{fig:perf_orig_opt}, we also notice that the optimized Taylor series  is a little bit faster than the original one. Furthermore, the performance does not decrease that significantly.
+Thus, we should use Taylor series with 11 terms in order to balance accuracy and performance.
+For Chebyshev approximation, 11 terms provide sufficient accuracy (less than 1e-5).
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{plots/performance/inc_rel_pi_001.pdf}
