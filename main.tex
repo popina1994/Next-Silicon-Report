@@ -172,7 +172,7 @@ Further, instead of following Theorem \ref{th:cheb_approx}, the algorithm implem
 \subsection{Experiments: Accuracy and Performance}
 Here we compare the performance and accuracy of various methods.
 \textbf{Accuracy.}
-Based on Figure \ref{fig:abs_error} and \ref{fig:rel_error}, we can notice that Chebyshev tend to produce more accurate results, especially farther away from 0. We also notice the more terms we use, the more accurate both methods become. The difference in terms of accuracy between optimized and non-optimized Taylor series implementation is negligible.
+Based on Figure \ref{fig:abs_error}, \ref{fig:rel_error}, \ref{fig:abs_error_two_pi} and \ref{fig:rel_error_two_pi}, we can notice that Chebyshev tend to produce more accurate results, especially farther away from 0. We also notice the more terms we use, the more accurate both methods become. The difference in terms of accuracy between optimized and non-optimized Taylor series implementation is negligible.
 We also run experiments for large numbers: 1e14 -1e15, however \texttt{sin x} provided by \texttt{std} library produces incorrect results which we verify by comparing some of our values with \texttt{np.sin}.
 
 \begin{figure}[h]
@@ -188,6 +188,20 @@ We also run experiments for large numbers: 1e14 -1e15, however \texttt{sin x} pr
   \caption{Comparison of relative error for various methods. We compute relative error by comparing to \texttt{sin x} provided by \texttt{std} library.}
   \label{fig:rel_error}
 \end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{plots/accuracy/num_abs_two_pi_001.pdf}
+    \caption{Comparison of absolute error for various methods.}
+    \label{fig:abs_error_two_pi}
+  \end{figure}
+
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{plots/accuracy/num_rel_two_pi_001.pdf}
+    \caption{Comparison of relative error for various methods. We compute relative error by comparing to \texttt{sin x} provided by \texttt{std} library.}
+    \label{fig:rel_error_two_pi}
+  \end{figure}
 
 \textbf{Performance.}
 Based on Figure \ref{fig:perf_inc} and \ref{fig:cheb_vs_tay}, we can notice that Chebyshev approximation tends to be slower around one order of magnitude.
